@@ -58,15 +58,9 @@ This project demonstrates creativity by applying LangGraph to a realistic legal 
 
 ## Video Summary Link
 
-(Add link after you record; YouTube or Drive)
 
-**Your video must include:**
 
-* Your face visible
-* 3–5 minute explanation
-* Overview of what the agent does
-* Inputs + outputs demonstration
-* Example run on a sample contract PDF
+
 
 ---
 
@@ -135,30 +129,4 @@ For each step below:
   * Commit msg: `docs: final documentation + demo notebook`
 
 ---
-
-## Example Project Structure
-
-```
-contract-qa-agent/
-├── README.md
-├── main.py
-├── data/
-│   ├── sample_contract.pdf
-│   └── vector_index.faiss
-├── graphs/
-│   └── contract_graph.py
-├── nodes/
-│   ├── ingest_node.py
-│   ├── chunk_node.py
-│   ├── embed_node.py
-│   ├── retrieve_node.py
-│   ├── analyze_node.py
-│   └── format_node.py
-├── tools/
-│   ├── date_parser.py
-│   ├── money_extractor.py
-│   └── clause_classifier.py
-└── notebooks/
-    └── demo.ipynb
-```
 
