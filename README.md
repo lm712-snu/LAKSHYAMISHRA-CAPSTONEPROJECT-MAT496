@@ -58,7 +58,7 @@ This project demonstrates creativity by applying LangGraph to a realistic legal 
 
 ## Video Summary Link
 
-
+https://drive.google.com/file/d/1Ob1kgvR4nKUxxs0XPgvw163Y1ZfVxssR/view?usp=sharing
 
 
 
