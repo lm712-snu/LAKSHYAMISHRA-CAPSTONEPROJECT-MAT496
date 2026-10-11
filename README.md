@@ -1,132 +1,72 @@
-# Title: **Legal Document Question-Answering & Contract Analyzer Agent (LangGraph)**
+# Contract QA & Risk Analyzer Agent
 
-## Overview
+A Streamlit prototype for asking questions about uploaded PDF contracts using retrieval-augmented generation (RAG), structured responses, and small helper tools.
 
-The **Contract Analyzer & Legal QA Agent** is an automated LangGraph-powered system that reads long and complex legal documents (contracts, policies, agreements), breaks them into semantically meaningful chunks, indexes them, and answers user questions with reliable, evidence-based responses.
+> **Status:** Academic prototype / in progress. This repository contains a working application path, but the broader LangGraph roadmap documented in earlier project notes is not fully implemented. It is not a substitute for review by a qualified legal professional.
 
-The system supports:
+## What the current app does
 
-* Clause extraction
-* Summaries of sections
-* Risk & anomaly detection
-* Identification of obligations, penalties, deadlines
-* Structured output for downstream use
-* RAG-based question answering using semantic search
-* Tool-calling for date normalization, amount extraction, or clause classification
+1. Accepts a PDF contract upload through a Streamlit interface.
+2. Extracts PDF text using `PyPDFLoader`.
+3. Splits the text into overlapping chunks.
+4. Creates embeddings and a FAISS vector index.
+5. Retrieves relevant chunks for a user question.
+6. Uses an OpenAI chat model to return a structured response with a summary, obligations, risks, and supporting clause snippets.
+7. Provides helper tools for calculating a deadline from a date and number of days, and extracting monetary-value patterns.
 
-This project is useful for anyone who wants to quickly understand a legal document without reading 40–200 pages manually.
+## Architecture
 
----
+```text
+PDF upload
+   ↓
+PDF text extraction
+   ↓
+Chunking (1000 characters, 150 overlap)
+   ↓
+OpenAI embeddings → FAISS vector index
+   ↓
+Question → retrieve relevant chunks
+   ↓
+OpenAI chat model + structured response schema
+   ↓
+Summary · Obligations · Risks · Supporting clauses
+```
 
-## Reason for picking this project
+## Technology
 
-This project fits perfectly with the course concepts. It uses:
+- **Interface:** Streamlit
+- **PDF ingestion:** LangChain community PDF loader
+- **Chunking:** RecursiveCharacterTextSplitter
+- **Embeddings / language model:** OpenAI integrations
+- **Vector retrieval:** FAISS
+- **Output validation:** Pydantic structured response model
+- **Helper tools:** Python date arithmetic and monetary-pattern extraction
 
-### ✔ Prompting
+## Run locally
 
-Specialized prompts for clause extraction, risk detection, legal summaries.
+1. Clone this repository.
+2. Create and activate a Python virtual environment.
+3. Install the dependencies used by the application: `streamlit`, `python-dotenv`, `langchain-community`, `langchain-text-splitters`, `langchain-openai`, `langchain-core`, `faiss-cpu`, and `pypdf`.
+4. Run `streamlit run app.py`.
+5. Provide an OpenAI API key in the app's password field or through a local environment configuration.
 
-### ✔ Structured Output
+Never commit a real API key or other secrets. Keep credentials in a local `.env` file that is excluded from version control.
 
-All final answers are returned as JSON with mandatory keys: `summary`, `risks`, `answers`, `supporting_clauses`.
+## Important limitations
 
-### ✔ Semantic Search
+- The answer quality depends on the uploaded document, retrieval quality, model behavior, and prompt.
+- Retrieved snippets are used as context, but the system does not guarantee legal completeness, correctness, or enforceability.
+- The monetary extractor currently uses a narrow regular expression and is not a complete financial parser.
+- The current app code is a Streamlit + LangChain pipeline; the repository's planned multi-node LangGraph roadmap should be treated as future work unless implemented in code.
+- Do not upload confidential contracts or personal information to an external model unless you have authorization and understand the relevant privacy requirements.
 
-All legal document segments are embedded and stored in a vector index for quick clause-level retrieval.
+## Academic context
 
-### ✔ RAG (Retrieval-Augmented Generation)
+Developed as a MAT496 capstone exploring prompting, structured output, semantic search, RAG, tool calling, and LLM application design.
 
-Queries are answered *only* based on retrieved clauses, making the output verifiable.
+## Repository contents
 
-### ✔ Tool Calling
-
-* A date parser tool (to convert "30 days from signing" → actual date)
-* A money extraction tool
-* A classification tool for contract clauses (payment, liability, confidentiality, termination, etc.)
-
-### ✔ LangGraph (State, Nodes, Graph)
-
-Nodes: Ingest → Chunk → Embed → Index → Retrieve → Analyze → Format JSON
-
-### ✔ LangSmith
-
-Used to observe node-level traces, debug prompt issues, and inspect final JSON validity.
-
-This project demonstrates creativity by applying LangGraph to a realistic legal automation task.
-
----
-
-## Video Summary Link
-
-https://drive.google.com/file/d/1Ob1kgvR4nKUxxs0XPgvw163Y1ZfVxssR/view?usp=sharing
-
-
-
----
-
-## Plan
-
-For each step below:
-
-* Implement the step
-* Change `[TODO]` → `[DONE]`
-* Commit with the recommended commit message
-* Spread commits across *at least two dates*
-
----
-
-### **Project Roadmap**
-
-* [TODO] **Step 1 — Repository Setup & Sample Data**
-
-  * Add sample legal documents (PDF/Markdown)
-  * Create folders: `graphs/`, `nodes/`, `data/`, `tools/`
-  * Commit msg: `chore: initial scaffold and sample documents`
-
-* [TODO] **Step 2 — Ingest & Chunk Node**
-
-  * Extract text from PDF
-  * Split into clauses using legal heuristics
-  * Commit msg: `feat(ingest): add PDF loader and clause chunker`
-
-* [TODO] **Step 3 — Embeddings & Vector Index**
-
-  * Use OpenAI / local embeddings
-  * Create FAISS or SQLite vector store
-  * Commit msg: `feat(index): embeddings + FAISS vector index`
-
-* [TODO] **Step 4 — Retrieval Node**
-
-  * Query embedding → nearest clause retrieval
-  * Commit msg: `feat(retrieve): semantic clause retrieval`
-
-* [TODO] **Step 5 — Legal Analysis Node (RAG)**
-
-  * Generate structured answers based only on retrieved clauses
-  * Provide: obligations, penalties, key parties, deadlines
-  * Commit msg: `feat(rag): legal clause analysis RAG node`
-
-* [TODO] **Step 6 — Tool Calling Integration**
-
-  * Add tools: date parser, amount extractor, clause classifier
-  * Commit msg: `feat(tools): add legal tools and integrate with graph`
-
-* [TODO] **Step 7 — Output Formatting Node**
-
-  * Validate JSON schema
-  * Re-ask model if invalid
-  * Commit msg: `feat(format): enforce JSON schema with retry`
-
-* [TODO] **Step 8 — LangSmith Tracing**
-
-  * Add tracing to each node
-  * Commit msg: `chore(debug): integrate LangSmith tracing`
-
-* [TODO] **Step 9 — Notebook Demo & Final README**
-
-  * Show example QAs on contract
-  * Add final video link
-  * Commit msg: `docs: final documentation + demo notebook`
-
----
+- `app.py` — Streamlit application.
+- `project.ipynb` — project notebook.
+- `README.md` — project overview and setup.
 
